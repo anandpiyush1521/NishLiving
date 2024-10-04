@@ -1,5 +1,14 @@
 # NishLiving
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Powered_by-Express.js-blue?style=for-the-badge&logo=express" alt="Powered by Express.js">
+  <img src="https://img.shields.io/badge/Powered_by-React.js-blue?style=for-the-badge&logo=react" alt="Powered by React.js">
+  <img src="https://img.shields.io/badge/Powered_by-Redux-blue?style=for-the-badge&logo=redux" alt="Powered by Redux">
+  <img src="https://img.shields.io/badge/Powered_by-MongoDB-green?style=for-the-badge&logo=mongodb" alt="Powered by MongoDB">
+  <!-- <img src="https://img.shields.io/badge/Powered_by-Node.js-green?style=for-the-badge&logo=node.js" alt="Powered by Node.js">
+  <img src="https://img.shields.io/badge/Powered_by-SCSS-pink?style=for-the-badge&logo=sass" alt="Powered by SCSS"> -->
+</p>
+
 Welcome to **NishLiving**, a comprehensive platform for property listings and bookings. This project leverages modern web technologies to provide a seamless experience for users looking to list their properties and for customers looking to book accommodations.
 
 <p align="center">
