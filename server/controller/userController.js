@@ -64,9 +64,32 @@ const getReservations = async (req, res) => {
   }
 };
 
+const getDetails = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      logger.error("User not found.", { userId });
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    console.log(user);
+    return res.status(200).json({ message: user });
+  } catch (error) {
+    logger.error("Error fetching user details.", { error });
+
+    // Send error response
+    return res
+      .status(500)
+      .json({ message: "Server error, please try again later." });
+  }
+};
+
 module.exports = {
   getTrips,
   updateWishlist,
   getProperties,
   getReservations,
+  getDetails,
 };
