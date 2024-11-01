@@ -1,55 +1,75 @@
 @import "./variables.scss";
 @import "./breakpoints.scss";
 
+// variables.scss
+$navbar-background: #ffffff; // or any color you prefer
+
+
 .navbar {
   padding: 10px 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
+  background-color: $navbar-background; // Optional for consistency with theme
 
+  // Responsive padding for smaller screens
   @include sm {
     padding: 10px 20px;
   }
 
+  // Logo Image
   img {
-    width: 200px;
+    width: 180px;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 
+  // Search Section
   &_search {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 15px;
     border: 1px solid $grey;
     border-radius: 30px;
     height: 50px;
-    padding: 0px 20px;
-    display: flex;
-    gap: 40px;
-    align-items: center;
+    transition: box-shadow 0.2s ease-in-out;
 
     input {
       border: none;
       outline: none;
+      font-size: 1rem;
+      flex: 1;
+      padding-left: 10px;
     }
 
     &:hover {
       @include shadow;
     }
 
+    // Hide search bar on smaller screens for responsive design
     @include lg {
       display: none;
     }
   }
 
+  // Right Section (Menu and Profile)
   &_right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
 
+    // Host/Create Listing Link
     .host {
       text-decoration: none;
       color: $blue;
-      font-weight: 700;
-      cursor: pointer;
+      font-weight: 600;
+      transition: color 0.3s ease;
 
       &:hover {
         color: $pinkred;
@@ -60,56 +80,66 @@
       }
     }
 
+    // Account Button with User Icon/Menu Icon
     &_account {
-      height: 50px;
       display: flex;
       align-items: center;
-      padding: 0 10px;
+      padding: 0 15px;
+      height: 50px;
+      gap: 10px;
       border: 1px solid $grey;
       border-radius: 30px;
-      display: flex;
-      gap: 10px;
-      background-color: white;
+      background-color: $navbar-background;
       cursor: pointer;
+      transition: box-shadow 0.2s ease-in-out;
 
       &:hover {
         @include shadow;
       }
 
+      // Profile Image Styling
       img {
         width: 40px;
         height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
       }
     }
 
+    // Dropdown Account Menu
     &_accountmenu {
       position: absolute;
-      background-color: white;
       right: 60px;
       top: 80px;
+      width: 220px;
       display: flex;
       flex-direction: column;
-      width: 200px;
       padding: 10px 0;
+      background-color: white;
       border: 1px solid $lightgrey;
-      border-radius: 20px;
+      border-radius: 12px;
       @include shadow;
       z-index: 9999;
+      transition: opacity 0.3s ease, transform 0.3s ease;
 
+      // Responsive positioning
       @include sm {
         right: 20px;
       }
 
+      // Menu Links
       a {
+        display: block;
         width: 100%;
-        padding: 8px 15px;
+        padding: 10px 15px;
         text-decoration: none;
         color: $blue;
-        font-weight: 700;
+        font-weight: 500;
+        transition: color 0.2s ease, background-color 0.2s ease;
 
         &:hover {
           color: $pinkred;
-          background-color: rgba(217, 213, 213, 0.2);
+          background-color: rgba(217, 213, 213, 0.15);
         }
       }
     }

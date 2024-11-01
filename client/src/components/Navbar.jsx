@@ -1,100 +1,113 @@
 import { IconButton } from "@mui/material";
 import { Search, Person, Menu } from "@mui/icons-material";
-import variables from "../styles/variables.scss";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import "../styles/Navbar.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../redux/state";
+import "../styles/Navbar.scss";
+import variables from "../styles/variables.scss";
 
-const Navbar = () => {
-  const [dropdownMenu, setDropdownMenu] = useState(false);
+// Logo Component
+const Logo = memo(() => (
+  <a href="/" className="navbar_logo">
+    <img src="/assets/logo.png" alt="logo" />
+  </a>
+));
 
-  const user = useSelector((state) => state.user);
+// SearchBar Component
+const SearchBar = ({ search, setSearch, onSearch }) => (
+  <div className="navbar_search">
+    <input
+      type="text"
+      placeholder="Search ..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      aria-label="Search"
+    />
+    <IconButton disabled={!search} onClick={onSearch}>
+      <Search sx={{ color: variables.pinkred }} />
+    </IconButton>
+  </div>
+);
 
-  const dispatch = useDispatch();
-
-  const [search, setSearch] = useState("");
-
-  const navigate = useNavigate();
-
-  return (
-    <div className="navbar">
-      <a href="/">
-        <img src="/assets/logo.png" alt="logo" />
-      </a>
-
-      <div className="navbar_search">
-        <input
-          type="text"
-          placeholder="Search ..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+// UserMenu Component
+const UserMenu = ({ user, dropdownMenu, toggleMenu, onLogout }) => (
+  <div className="navbar_right">
+    <a href={user ? "/create-listing" : "/login"} className="host">
+      {user ? "Create Listing" : "Become A Host"}
+    </a>
+    <button
+      className="navbar_right_account"
+      onClick={toggleMenu}
+      aria-expanded={dropdownMenu}
+      aria-label="User Menu"
+    >
+      <Menu sx={{ color: variables.darkgrey }} />
+      {user ? (
+        <img
+          src={user.profileImagePath}
+          alt="profile photo"
+          style={{ objectFit: "cover", borderRadius: "50%" }}
         />
-        <IconButton disabled={search === ""}>
-          <Search
-            sx={{ color: variables.pinkred }}
-            onClick={() => {
-              navigate(`/properties/search/${search}`);
-            }}
-          />
-        </IconButton>
-      </div>
+      ) : (
+        <Person sx={{ color: variables.darkgrey }} />
+      )}
+    </button>
 
-      <div className="navbar_right">
-        {user ? (
-          <a href="/create-listing" className="host">
-            Create Listing
-          </a>
-        ) : (
-          <a href="/login" className="host">
-            Become A Host
-          </a>
-        )}
-
-        <button
-          className="navbar_right_account"
-          onClick={() => setDropdownMenu(!dropdownMenu)}
-        >
-          <Menu sx={{ color: variables.darkgrey }} />
-          {!user ? (
-            <Person sx={{ color: variables.darkgrey }} />
-          ) : (
-            <img
-              src={user.profileImagePath}
-              alt="profile photo"
-              style={{ objectFit: "cover", borderRadius: "50%" }}
-            />
-          )}
-        </button>
-
-        {dropdownMenu && !user && (
-          <div className="navbar_right_accountmenu">
+    {dropdownMenu && (
+      <div className="navbar_right_accountmenu">
+        {!user ? (
+          <>
             <Link to="/login">Log In</Link>
             <Link to="/register">Sign Up</Link>
-          </div>
-        )}
-
-        {dropdownMenu && user && (
-          <div className="navbar_right_accountmenu">
+          </>
+        ) : (
+          <>
             <Link to={`/${user._id}/trips`}>Trip List</Link>
             <Link to={`/${user._id}/wishList`}>Wish List</Link>
             <Link to={`/${user._id}/properties`}>Property List</Link>
             <Link to={`/${user._id}/reservations`}>Reservation List</Link>
             <Link to="/create-listing">Become A Host</Link>
-
-            <Link
-              to="/login"
-              onClick={() => {
-                dispatch(setLogout());
-              }}
-            >
+            <Link to="/login" onClick={onLogout}>
               Log Out
             </Link>
-          </div>
+          </>
         )}
       </div>
-    </div>
+    )}
+  </div>
+);
+
+const Navbar = () => {
+  const [dropdownMenu, setDropdownMenu] = useState(false);
+  const [search, setSearch] = useState("");
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const toggleMenu = () => setDropdownMenu(!dropdownMenu);
+  const onLogout = () => {
+    dispatch(setLogout());
+    setDropdownMenu(false);
+  };
+  const onSearch = () => {
+    if (search) {
+      navigate(`/properties/search/${search}`);
+      setSearch("");
+    }
+  };
+
+  return (
+    <nav className="navbar">
+      <Logo />
+      <SearchBar search={search} setSearch={setSearch} onSearch={onSearch} />
+      <UserMenu
+        user={user}
+        dropdownMenu={dropdownMenu}
+        toggleMenu={toggleMenu}
+        onLogout={onLogout}
+      />
+    </nav>
   );
 };
 
