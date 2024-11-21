@@ -6,11 +6,9 @@ const { registerUser, loginUser } = require("../controller/authController");
 const upload = multer({ dest: "public/uploads/" });
 
 router.post("/register", upload.single("profileImage"), registerUser);
-router.post("/login", loginUser); // Generates JWT on login
+router.post("/login", loginUser); // Generates JWT on login0
 
 module.exports = router;
-
-
 
 // const router = require("express").Router();
 // const upload = require("../middleware/fileUpload"); // Import the middleware
@@ -45,7 +43,6 @@ module.exports = router;
 // router.post("/login", loginUser);
 
 // module.exports = router;
-
 
 // const router = require("express").Router();
 // const multer = require("multer");

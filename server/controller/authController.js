@@ -5,7 +5,6 @@ const logger = require("../logger");
 const { generateToken } = require("../middleware/authMiddleware"); // Import the middleware
 const { uploadOnCloudinary } = require("../utils/cloudinary"); // Import Cloudinary helper
 
-
 // const registerUser = async (req, res) => {
 //   try {
 //     const { firstName, lastName, email, password } = req.body;
@@ -80,7 +79,10 @@ const registerUser = async (req, res) => {
     const profileImage = req.file;
 
     if (!profileImage) {
-      logger.warn("Registration failed: No profile image uploaded.", { endpoint: "/auth/register", email });
+      logger.warn("Registration failed: No profile image uploaded.", {
+        endpoint: "/auth/register",
+        email,
+      });
       return res.status(400).send("No file uploaded");
     }
 
@@ -90,7 +92,7 @@ const registerUser = async (req, res) => {
       logger.error("Image upload failed during registration.", { email });
       return res.status(500).json({ message: "Image upload failed!" });
     }
-    
+
     const profileImageUrl = cloudinaryResponse.url; // Get the Cloudinary URL
 
     const existingUser = await User.findOne({ email });
@@ -108,32 +110,77 @@ const registerUser = async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
-      profileImagePath: profileImageUrl,  // Store the Cloudinary URL here
+      profileImagePath: profileImageUrl, // Store the Cloudinary URL here
     });
     await newUser.save();
 
-    logger.info("User registered successfully.", { userId: newUser._id, firstName, lastName });
+    logger.info("User registered successfully.", {
+      userId: newUser._id,
+      firstName,
+      lastName,
+    });
     res.status(200).json({
       message: "User registered successfully!",
       user: newUser,
     });
   } catch (err) {
-    logger.error("User registration failed.", { error: err.message, stack: err.stack });
-    res.status(500).json({ message: "Registration failed!", error: err.message });
+    logger.error("User registration failed.", {
+      error: err.message,
+      stack: err.stack,
+    });
+    res
+      .status(500)
+      .json({ message: "Registration failed!", error: err.message });
   }
 };
 
+// const loginUser = async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
 
+//     const user = await User.find({ email: email });
+//     if (!user) {
+//       logger.warn("Login failed: User doesn't exist.", { email });
+//       return res.status(409).json({ message: "User doesn't exist!" });
+//     }
 
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       logger.warn("Login failed: Invalid credentials.", { email });
+//       return res.status(400).json({ message: "Invalid Credentials!" });
+//     }
+
+//     // Generate token using middleware function
+//     const token = generateToken(user._id);
+
+//     console.log("JWT token generated:- ", token);
+
+//     // Remove sensitive info before returning user
+//     // delete user.password;
+
+//     logger.info("User logged in successfully.", { userId: user._id, email });
+//     res.status(200).json({ token, user });
+//   } catch (err) {
+//     logger.error("Login failed.", { error: err.message, stack: err.stack });
+//     res.status(500).json({ error: err.message });
+//   }
+// };
 
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    // Use findOne to return a single user object
+    const user = await User.findOne({ email: email });
     if (!user) {
       logger.warn("Login failed: User doesn't exist.", { email });
       return res.status(409).json({ message: "User doesn't exist!" });
+    }
+
+    // Check if password exists in user object
+    if (!user.password) {
+      logger.warn("Login failed: Password not found.", { email });
+      return res.status(400).json({ message: "Password not found for user!" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -145,8 +192,7 @@ const loginUser = async (req, res) => {
     // Generate token using middleware function
     const token = generateToken(user._id);
 
-    // Remove sensitive info before returning user
-    delete user.password;
+    console.log("JWT token generated:- ", token);
 
     logger.info("User logged in successfully.", { userId: user._id, email });
     res.status(200).json({ token, user });
@@ -155,7 +201,6 @@ const loginUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 module.exports = {
   registerUser,
