@@ -4,8 +4,7 @@ const { DB_NAME } = require("../constants");
 const connectDB = async () => {
   try {
     const connectionInstance = await mongoose.connect(
-      `mongodb+srv://jsiddharth847:Indore1234@cluster0.xxvhr7g.mongodb.net/nishHotel
-      ?retryWrites=true&w=majority`
+      process.env.MONGODBURI
     );
 
     // const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
