@@ -11,7 +11,8 @@ const listingRoutes = require("./routes/Listing.js")
 const bookingRoutes = require("./routes/Booking.js")
 const userRoutes = require("./routes/User.js")
 
-app.use(cors());
+// app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static("public"));
 
